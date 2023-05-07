@@ -1,5 +1,10 @@
 import { Text, Heading, Card, CardBody, Stack, Image } from '@chakra-ui/react'
-export default function CardCollection() {
+
+type CardCollectionProps = {
+  id: string
+  name: string
+}
+export default function CardCollection({ id, name }: CardCollectionProps) {
   return (
     <Card maxW="sm" shadow={'none'}>
       <CardBody>
@@ -11,8 +16,8 @@ export default function CardCollection() {
           w={200}
         />
         <Stack mt="6" spacing="3">
-          <Heading size="md">Berds</Heading>
-          <Text>Larry Berd</Text>
+          <Heading size="md">{!!name ? name : '-'}</Heading>
+          <Text>{id}</Text>
         </Stack>
       </CardBody>
     </Card>
