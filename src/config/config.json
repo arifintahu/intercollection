@@ -1,11 +1,11 @@
 {
   "chains": [
     {
-      "chainId": "uptick_7000-2",
+      "chain_id": "uptick_7000-2",
       "description": "Uptick Testnet",
       "rpc": "http://52.220.252.160:26657",
       "rest": "http://52.220.252.160:1317",
-      "jsonRpc": "http://52.220.252.160:8545"
+      "json_rpc": "http://52.220.252.160:8545"
     }
   ]
 }

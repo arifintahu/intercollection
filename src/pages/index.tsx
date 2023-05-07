@@ -1,8 +1,16 @@
 import { Text, Flex, Heading, Box, Grid } from '@chakra-ui/react'
 import Head from 'next/head'
+import { useState, useEffect } from 'react'
 import CardCollection from '@/components/CardCollection'
+import { getDenoms } from '@/query/uptick/collection'
+import { getChains } from '@/config'
 
 export default function Home() {
+  useEffect(() => {
+    const chain = getChains()[0]
+    getDenoms(chain.rest).then(console.log).catch(console.warn)
+  }, [])
+
   return (
     <>
       <Head>

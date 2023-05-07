@@ -1,20 +1,24 @@
 import config from './config.json'
 
 export interface Chain {
-  readonly chainId: string
+  readonly chain_id: string
   readonly description: string
   readonly rpc: string
   readonly rest: string
-  readonly jsonRpc: string
+  readonly json_rpc: string
 }
 export interface Config {
   chains: Chain[]
 }
 
-export function getConfig(): Config {
-  return config
+export function getChains(): Chain[] {
+  return config.chains
 }
 
-export function getChain(chainId: string): Chain | undefined {
-  return getConfig().chains.find((item) => item.chainId == chainId)
+export function getChain(chainId: string): Chain | null {
+  const chain = config.chains.find((item) => item.chain_id == chainId)
+  if (!chain) {
+    return null
+  }
+  return chain
 }
