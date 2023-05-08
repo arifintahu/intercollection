@@ -7,10 +7,12 @@ import {
   useColorMode,
   Heading,
   Select,
+  Link,
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+import NextLink from 'next/link'
 import { getChains, Chain } from '@/config'
 import { setChainId } from '@/store/chainSlice'
 
@@ -35,14 +37,21 @@ export default function Navbar() {
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={24}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Heading
-            size={'sm'}
-            fontFamily={'mono'}
-            textTransform={'uppercase'}
-            letterSpacing={3}
+          <Link
+            as={NextLink}
+            href={'/'}
+            style={{ textDecoration: 'none' }}
+            _focus={{ boxShadow: 'none' }}
           >
-            Inter Collection
-          </Heading>
+            <Heading
+              size={'sm'}
+              fontFamily={'mono'}
+              textTransform={'uppercase'}
+              letterSpacing={3}
+            >
+              Inter Collection
+            </Heading>
+          </Link>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>

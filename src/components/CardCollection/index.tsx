@@ -7,8 +7,10 @@ import {
   Image,
   Tag,
   Box,
+  Link,
 } from '@chakra-ui/react'
 import { isNativeNFT, isURL } from '@/utils/helpers'
+import NextLink from 'next/link'
 
 type CardCollectionProps = {
   id: string
@@ -28,22 +30,28 @@ export default function CardCollection({
     <Card maxW="sm" shadow={'none'}>
       <CardBody>
         <Box position={'relative'}>
-          <Image
-            src={isURL(uri) ? uri : templateImage}
-            alt={id}
-            borderRadius="lg"
-            h={200}
-            w={200}
-            transition={'all 0.5s ease-in-out'}
-            _hover={{
-              transform: 'scale(1.1,1.1)',
-            }}
-            cursor={'pointer'}
-          />
+          <Link
+            as={NextLink}
+            href={'/collections/' + encodeURIComponent(id)}
+            style={{ textDecoration: 'none' }}
+            _focus={{ boxShadow: 'none' }}
+          >
+            <Image
+              src={isURL(uri) ? uri : templateImage}
+              alt={id}
+              borderRadius="lg"
+              h={200}
+              w={200}
+              transition={'all 0.5s ease-in-out'}
+              _hover={{
+                transform: 'scale(1.1,1.1)',
+              }}
+            />
+          </Link>
           <Tag
             position={'absolute'}
             top={1}
-            right={1}
+            left={1}
             colorScheme="orange"
             textColor={'orange.800'}
           >
