@@ -15,6 +15,7 @@ export default function Home() {
     const chain = getChain(chainId)
     if (chain) {
       getDenoms(chain.rest).then((response) => {
+        console.log(response)
         setDenoms(response.denoms)
       })
     }
@@ -43,7 +44,13 @@ export default function Home() {
           <Box mt={8}>
             <Grid templateColumns="repeat(5, 1fr)" gap={10}>
               {denoms.map((item) => (
-                <CardCollection key={item.id} name={item.name} id={item.id} />
+                <CardCollection
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  description={item.description}
+                  uri={item.uri}
+                />
               ))}
             </Grid>
           </Box>
