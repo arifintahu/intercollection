@@ -26,3 +26,28 @@ export async function getDenoms(baseUrl: string): Promise<DenomsReponse> {
   const response: DenomsReponse = await request.get(baseUrl, path)
   return response
 }
+
+export interface NFT {
+  id: string
+  name: string
+  owner: string
+  uri: string
+  uri_hash: string
+  data: string
+}
+export interface Collection {
+  denom: Denom
+  nfts: NFT[]
+}
+export interface CollectionResponse {
+  collection: Collection
+  pagination: Pagination
+}
+export async function getCollection(
+  baseUrl: string,
+  denomId: string
+): Promise<CollectionResponse> {
+  const path = '/uptick/collection/collections/' + denomId
+  const response: CollectionResponse = await request.get(baseUrl, path)
+  return response
+}
