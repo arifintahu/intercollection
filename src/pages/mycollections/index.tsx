@@ -6,8 +6,9 @@ import CardCollection from '@/components/CardCollection'
 import { getDenoms, Denom } from '@/query/uptick/collection'
 import { getChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
+import { getCollectionsByOwner } from '@/rpc/uptick/collection'
 
-export default function MyNFTs() {
+export default function MyCollections() {
   const chainId = useSelector(selectChainId)
   const [denoms, setDenoms] = useState<Denom[]>([])
 
@@ -17,14 +18,18 @@ export default function MyNFTs() {
       getDenoms(chain.rest).then((response) => {
         setDenoms(response.denoms)
       })
+      getCollectionsByOwner(
+        chain.rpc,
+        'uptick1mf6y72sh95vu4gky6e5vqzpueuhm3s0udac0az'
+      ).then(console.log)
     }
   }, [chainId])
 
   return (
     <>
       <Head>
-        <title>My NFTs | Inter Collection</title>
-        <meta name="description" content="My NFTs | Inter Collection" />
+        <title>My Collections | Inter Collection</title>
+        <meta name="description" content="My Collections | Inter Collection" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -35,10 +40,10 @@ export default function MyNFTs() {
           justifyContent={'center'}
         >
           <Heading fontWeight={'medium'} size={'xl'}>
-            My NFTs
+            My Collections
           </Heading>
           <Text fontWeight={'light'} fontSize={'lg'}>
-            Uptick on-chain nfts
+            Uptick on-chain collections
           </Text>
           <Box mt={8}>
             <Grid templateColumns="repeat(5, 1fr)" gap={10}>

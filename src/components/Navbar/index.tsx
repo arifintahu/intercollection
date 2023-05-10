@@ -95,11 +95,11 @@ export default function Navbar() {
             {!!address ? (
               <Link
                 as={NextLink}
-                href={'/mynfts'}
+                href={'/mycollections'}
                 style={{ textDecoration: 'none' }}
                 _focus={{ boxShadow: 'none' }}
               >
-                <Button>My NFTs</Button>
+                <Button>My Collections</Button>
               </Link>
             ) : (
               <></>

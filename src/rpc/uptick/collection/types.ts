@@ -2,7 +2,13 @@ import {
   PageRequest,
   PageResponse,
 } from 'cosmjs-types/cosmos/base/query/v1beta1/pagination'
-import { Denom, Collection, createBaseColletion } from './nft'
+import {
+  Denom,
+  Collection,
+  createBaseCollection,
+  Owner,
+  createBaseOwner,
+} from './nft'
 import * as _m0 from 'protobufjs/minimal'
 import { isSet, DeepPartial, Exact } from 'cosmjs-types/helpers'
 
@@ -212,7 +218,7 @@ export const QueryCollectionRequest = {
 
 export function createBaseQueryCollectionResponse(): QueryCollectionResponse {
   return {
-    collection: createBaseColletion(),
+    collection: createBaseCollection(),
   }
 }
 
@@ -231,6 +237,133 @@ export const QueryCollectionResponse = {
       switch (tag >>> 3) {
         case 1:
           message.collection = Collection.decode(reader, reader.uint32())
+          break
+
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+
+    return message
+  },
+}
+
+export interface QueryNFTsOfOwnerRequest {
+  denom_id?: string
+  owner: string
+  pagination?: PageRequest
+}
+
+export interface QueryNFTsOfOwnerResponse {
+  owner: Owner
+  pagination?: PageResponse
+}
+
+function createBaseQueryNFTsOfOwnerRequest(): QueryNFTsOfOwnerRequest {
+  return {
+    owner: '',
+  }
+}
+
+export const QueryNFTsOfOwnerRequest = {
+  encode(
+    message: QueryNFTsOfOwnerRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom_id !== undefined) {
+      writer.uint32(10).string(message.denom_id)
+    }
+
+    if (message.owner !== '') {
+      writer.uint32(10).string(message.owner)
+    }
+
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim()
+    }
+
+    return writer
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNFTsOfOwnerRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input)
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = createBaseQueryNFTsOfOwnerRequest()
+
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+
+      switch (tag >>> 3) {
+        case 1:
+          message.denom_id = reader.string()
+          break
+        case 2:
+          message.owner = reader.string()
+          break
+        case 3:
+          message.pagination = PageRequest.decode(reader, reader.uint32())
+          break
+
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+
+    return message
+  },
+
+  fromJSON(object: any): QueryNFTsOfOwnerRequest {
+    return {
+      denom_id: isSet(object.denom_id) ? String(object.denom_id) : '',
+      owner: isSet(object.owner) ? String(object.owner) : '',
+      pagination: isSet(object.pagination)
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined,
+    }
+  },
+
+  toJSON(message: QueryNFTsOfOwnerRequest): unknown {
+    const obj: any = {}
+    message.denom_id !== undefined && (obj.denom_id = message.denom_id)
+    message.owner !== undefined && (obj.owner = message.owner)
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined)
+    return obj
+  },
+}
+
+export function createBaseQueryNFTsOfOwnerResponse(): QueryNFTsOfOwnerResponse {
+  return {
+    owner: createBaseOwner(),
+    pagination: undefined,
+  }
+}
+
+export const QueryNFTsOfOwnerResponse = {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNFTsOfOwnerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input)
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = createBaseQueryNFTsOfOwnerResponse()
+
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+
+      switch (tag >>> 3) {
+        case 1:
+          message.owner = Owner.decode(reader, reader.uint32())
+          break
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32())
           break
 
         default:

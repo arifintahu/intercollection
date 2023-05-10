@@ -29,6 +29,16 @@ export interface Collection {
   nfts: NFT[]
 }
 
+export interface IDCollection {
+  denom_id: string
+  token_ids: string[]
+}
+
+export interface Owner {
+  address: string
+  id_collections: IDCollection[]
+}
+
 function createBaseDenom(): Denom {
   return {
     id: '',
@@ -198,7 +208,7 @@ export const NFT = {
   },
 }
 
-export function createBaseColletion(): Collection {
+export function createBaseCollection(): Collection {
   return {
     denom: createBaseDenom(),
     nfts: [],
@@ -209,7 +219,7 @@ export const Collection = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Collection {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input)
     let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseColletion()
+    const message = createBaseCollection()
 
     while (reader.pos < end) {
       const tag = reader.uint32()
@@ -221,6 +231,78 @@ export const Collection = {
 
         case 2:
           message.nfts.push(NFT.decode(reader, reader.uint32()))
+          break
+
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+
+    return message
+  },
+}
+
+export function createBaseIDCollection(): IDCollection {
+  return {
+    denom_id: '',
+    token_ids: [],
+  }
+}
+
+export const IDCollection = {
+  decode(input: _m0.Reader | Uint8Array, length?: number): IDCollection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input)
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = createBaseIDCollection()
+
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+
+      switch (tag >>> 3) {
+        case 1:
+          message.denom_id = reader.string()
+          break
+
+        case 2:
+          message.token_ids.push(reader.string())
+          break
+
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+
+    return message
+  },
+}
+
+export function createBaseOwner(): Owner {
+  return {
+    address: '',
+    id_collections: [],
+  }
+}
+
+export const Owner = {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Owner {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input)
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = createBaseOwner()
+
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string()
+          break
+
+        case 2:
+          message.id_collections.push(
+            IDCollection.decode(reader, reader.uint32())
+          )
           break
 
         default:
