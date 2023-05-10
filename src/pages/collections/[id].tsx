@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { getChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
-import { getCollection, Denom, NFT } from '@/query/uptick/collection'
+import { getCollection, Denom, NFT } from '@/rpc/uptick/collection'
 import { isNativeNFT, isURL } from '@/utils/helpers'
 import CardNFT from '@/components/CardNFT'
 
@@ -32,11 +32,12 @@ export default function CollectionsDetail() {
   useEffect(() => {
     const chain = getChain(chainId)
     if (chain && id) {
-      getCollection(chain.rest, id as string).then((response) => {
-        console.log(response)
-        setDenom(response.collection.denom)
-        setNFTs(response.collection.nfts)
-      })
+      getCollection(chain.rpc, id as string)
+        .then((response) => {
+          setDenom(response.collection.denom)
+          setNFTs(response.collection.nfts)
+        })
+        .catch(console.error)
     }
   }, [chainId, id])
 
@@ -99,7 +100,7 @@ export default function CollectionsDetail() {
                   key={item.id}
                   id={item.id}
                   name={item.name}
-                  uri={item.uri}
+                  uri={item.uri ?? ''}
                 />
               ))}
             </Grid>

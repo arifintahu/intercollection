@@ -76,21 +76,35 @@ export default function Navbar() {
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={24}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Link
-            as={NextLink}
-            href={'/'}
-            style={{ textDecoration: 'none' }}
-            _focus={{ boxShadow: 'none' }}
-          >
-            <Heading
-              size={'sm'}
-              fontFamily={'mono'}
-              textTransform={'uppercase'}
-              letterSpacing={3}
+          <Flex alignItems={'center'} gap={6}>
+            <Link
+              as={NextLink}
+              href={'/'}
+              style={{ textDecoration: 'none' }}
+              _focus={{ boxShadow: 'none' }}
             >
-              Inter Collection
-            </Heading>
-          </Link>
+              <Heading
+                size={'sm'}
+                fontFamily={'mono'}
+                textTransform={'uppercase'}
+                letterSpacing={3}
+              >
+                Inter Collection
+              </Heading>
+            </Link>
+            {!!address ? (
+              <Link
+                as={NextLink}
+                href={'/mynfts'}
+                style={{ textDecoration: 'none' }}
+                _focus={{ boxShadow: 'none' }}
+              >
+                <Button>My NFTs</Button>
+              </Link>
+            ) : (
+              <></>
+            )}
+          </Flex>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
