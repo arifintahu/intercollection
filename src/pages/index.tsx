@@ -15,7 +15,6 @@ export default function Home() {
     const chain = getChain(chainId)
     if (chain) {
       getDenoms(chain.rest).then((response) => {
-        console.log(response)
         setDenoms(response.denoms)
       })
     }

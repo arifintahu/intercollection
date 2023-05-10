@@ -8,18 +8,34 @@ import {
   Heading,
   Select,
   Link,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  Text,
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import NextLink from 'next/link'
-import { getChains, Chain } from '@/config'
-import { setChainId } from '@/store/chainSlice'
+import { getChains, Chain, getChain } from '@/config'
+import { setChainId, selectChainId } from '@/store/chainSlice'
+import { setAddress, selectAddress } from '@/store/accountSlice'
+import { trimAddress, showBalance } from '@/utils/helpers'
+import { getBalances, Balance } from '@/query/cosmos/bank'
 
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()
   const [chains, setChains] = useState<Chain[]>([])
+  const [balances, setBalances] = useState<Balance[]>([])
   const dispatch = useDispatch()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const chainId = useSelector(selectChainId)
+  const address = useSelector(selectAddress)
+  const finalRef = useRef(null)
 
   useEffect(() => {
     if (chains.length) {
@@ -29,8 +45,31 @@ export default function Navbar() {
     }
   }, [chains])
 
+  useEffect(() => {
+    const chain = getChain(chainId)
+    if (chain && address) {
+      getBalances(chain.rest, address).then((response) => {
+        setBalances(response.balances)
+      })
+    }
+  }, [chainId, address])
+
   const handleSelectChain = (event: any) => {
     dispatch(setChainId(event.target.value as string))
+  }
+
+  const handleKeplr = async () => {
+    if (window.keplr) {
+      await window.keplr.enable(chainId)
+      const offlineSigner = window.keplr.getOfflineSigner(chainId)
+      const accounts = await offlineSigner.getAccounts()
+      if (accounts[0].address) {
+        dispatch(setAddress(accounts[0].address))
+        onClose()
+      }
+    } else {
+      alert('Please install keplr extension')
+    }
   }
 
   return (
@@ -72,25 +111,59 @@ export default function Navbar() {
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
 
-              <Button
-                as={'a'}
-                display={{ base: 'none', md: 'inline-flex' }}
-                fontSize={'md'}
-                px={8}
-                color={'white'}
-                bg={'orange.500'}
-                href={'#'}
-                _hover={{
-                  bg: 'orange.400',
-                }}
-                minW={150}
-              >
-                Connect
-              </Button>
+              {!!address ? (
+                <Flex
+                  flexDirection={'column'}
+                  justifyContent={'center'}
+                  alignItems={'flex-end'}
+                >
+                  <Text fontSize={'sm'}>{trimAddress(address)}</Text>
+                  <Text fontSize={'sm'}>
+                    {balances.length
+                      ? showBalance(balances[0].denom, balances[0].amount)
+                      : ''}
+                  </Text>
+                </Flex>
+              ) : (
+                <Button
+                  as={'a'}
+                  display={{ base: 'none', md: 'inline-flex' }}
+                  fontSize={'md'}
+                  px={8}
+                  color={'white'}
+                  bg={'orange.500'}
+                  href={'#'}
+                  _hover={{
+                    bg: 'orange.400',
+                  }}
+                  minW={150}
+                  onClick={onOpen}
+                >
+                  Connect
+                </Button>
+              )}
             </Stack>
           </Flex>
         </Flex>
       </Box>
+
+      <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Connect an Interchain Wallet</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody px={6} py={8}>
+            <Button
+              colorScheme="orange"
+              variant="outline"
+              width={'full'}
+              onClick={handleKeplr}
+            >
+              Keplr Wallet
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   )
 }
