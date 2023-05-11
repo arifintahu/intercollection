@@ -72,7 +72,7 @@ export async function getCollectionsByOwner(
 ): Promise<CollectionsByOwnerResponse> {
   let path = '/uptick/collection/nfts?owner=' + owner
   if (!!denomId) {
-    path = path + 'denom_id=' + denomId
+    path = path + '&denom_id=' + denomId
   }
   const response: CollectionsByOwnerResponse = await request.get(baseUrl, path)
   return response
