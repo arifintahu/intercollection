@@ -15,6 +15,15 @@ export const isURL = (uri: string): boolean => {
   return true
 }
 
+export const isJSON = (str: string): boolean => {
+  try {
+    JSON.parse(str)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
 export const trimAddress = (address: string): string => {
   const indexPrefix = address.indexOf('1')
   const first = address.slice(0, indexPrefix + 2)

@@ -5,7 +5,6 @@ import {
   Box,
   Grid,
   Image,
-  Stack,
   Tag,
   useColorModeValue,
   HStack,
@@ -19,6 +18,7 @@ import {
   Button,
   useDisclosure,
 } from '@chakra-ui/react'
+import { JSONTree } from 'react-json-tree'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -28,7 +28,7 @@ import { selectChainId } from '@/store/chainSlice'
 import { selectAddress } from '@/store/accountSlice'
 import { getCollection, Denom, NFT } from '@/rpc/uptick/collection'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
-import { isNativeNFT, isURL, templateImage } from '@/utils/helpers'
+import { isNativeNFT, isURL, isJSON, templateImage } from '@/utils/helpers'
 import CardNFT from '@/components/CardNFT'
 
 interface NFTExtend extends NFT {
@@ -215,9 +215,15 @@ export default function CollectionsDetail() {
               </Flex>
               <Flex flexDirection={'column'} gap={0} mb={4}>
                 <Text fontSize={'sm'}>Data</Text>
-                <Text fontWeight={'semibold'}>
-                  {!!selectedNFT?.data ? selectedNFT?.data : '-'}
-                </Text>
+                {isJSON(selectedNFT?.data ?? '') ? (
+                  <JSONTree
+                    data={JSON.parse(selectedNFT?.data ?? '{}')}
+                  ></JSONTree>
+                ) : (
+                  <Text fontWeight={'semibold'}>
+                    {!!selectedNFT?.data ? selectedNFT?.data : '-'}
+                  </Text>
+                )}
               </Flex>
             </ModalBody>
 
