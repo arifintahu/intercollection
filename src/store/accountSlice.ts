@@ -9,7 +9,8 @@ export interface AccountState {
 
 // Initial state
 const initialState: AccountState = {
-  address: '',
+  // TO-DO: Testing purpose change back -> ''
+  address: 'uptick1mf6y72sh95vu4gky6e5vqzpueuhm3s0udac0az',
 }
 
 // Actual Slice

@@ -3,27 +3,27 @@ import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import CardCollection from '@/components/CardCollection'
-import { getDenoms, Denom } from '@/query/uptick/collection'
+import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
 import { getChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
-import { getCollectionsByOwner } from '@/rpc/uptick/collection'
+import { trimDenom } from '@/utils/helpers'
+import { selectAddress } from '@/store/accountSlice'
 
 export default function MyCollections() {
   const chainId = useSelector(selectChainId)
-  const [denoms, setDenoms] = useState<Denom[]>([])
+  const [idCollections, setIdCollections] = useState<IDCollection[]>([])
+  const address = useSelector(selectAddress)
 
   useEffect(() => {
     const chain = getChain(chainId)
-    if (chain) {
-      getDenoms(chain.rest).then((response) => {
-        setDenoms(response.denoms)
-      })
-      getCollectionsByOwner(
-        chain.rpc,
-        'uptick1mf6y72sh95vu4gky6e5vqzpueuhm3s0udac0az'
-      ).then(console.log)
+    if (chain && address) {
+      getCollectionsByOwner(chain.rest, address)
+        .then((response) => {
+          setIdCollections(response.owner.id_collections)
+        })
+        .catch(console.error)
     }
-  }, [chainId])
+  }, [chainId, address])
 
   return (
     <>
@@ -47,13 +47,13 @@ export default function MyCollections() {
           </Text>
           <Box mt={8}>
             <Grid templateColumns="repeat(5, 1fr)" gap={10}>
-              {denoms.map((item) => (
+              {idCollections.map((item) => (
                 <CardCollection
-                  key={item.id}
-                  id={item.id}
-                  name={item.name}
-                  description={item.description}
-                  uri={item.uri}
+                  key={item.denom_id}
+                  id={item.denom_id}
+                  name={trimDenom(item.denom_id)}
+                  description={`${item.token_ids.length} NFTs owned`}
+                  uri={''}
                 />
               ))}
             </Grid>

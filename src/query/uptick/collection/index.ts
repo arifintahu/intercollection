@@ -51,3 +51,29 @@ export async function getCollection(
   const response: CollectionResponse = await request.get(baseUrl, path)
   return response
 }
+
+export interface IDCollection {
+  denom_id: string
+  token_ids: string[]
+}
+
+export interface Owner {
+  address: string
+  id_collections: IDCollection[]
+}
+export interface CollectionsByOwnerResponse {
+  owner: Owner
+  pagination: Pagination
+}
+export async function getCollectionsByOwner(
+  baseUrl: string,
+  owner: string,
+  denomId?: string
+): Promise<CollectionsByOwnerResponse> {
+  let path = '/uptick/collection/nfts?owner=' + owner
+  if (!!denomId) {
+    path = path + 'denom_id=' + denomId
+  }
+  const response: CollectionsByOwnerResponse = await request.get(baseUrl, path)
+  return response
+}

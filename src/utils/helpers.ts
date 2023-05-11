@@ -19,6 +19,20 @@ export const trimAddress = (address: string): string => {
   return first + '...' + last
 }
 
+export const trimDenom = (denomId: string): string => {
+  if (denomId.startsWith('ibc/')) {
+    const first = denomId.slice(0, 10)
+    const last = denomId.slice(denomId.length - 5, denomId.length)
+    return first + '...' + last
+  } else if (denomId.length > 18) {
+    const first = denomId.slice(0, 14)
+    const last = denomId.slice(denomId.length - 3, denomId.length)
+    return first + '...' + last
+  } else {
+    return denomId
+  }
+}
+
 export const showBalance = (denom: string, amount: number) => {
   if (denom.startsWith('a')) {
     return `${Math.round((amount * 100) / 10 ** 18) / 100} ${denom

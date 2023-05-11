@@ -6,6 +6,7 @@ import CardCollection from '@/components/CardCollection'
 import { getDenoms, Denom } from '@/query/uptick/collection'
 import { getChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
+import { trimDenom } from '@/utils/helpers'
 
 export default function Home() {
   const chainId = useSelector(selectChainId)
@@ -46,8 +47,8 @@ export default function Home() {
                 <CardCollection
                   key={item.id}
                   id={item.id}
-                  name={item.name}
-                  description={item.description}
+                  name={trimDenom(item.id)}
+                  description={item.name}
                   uri={item.uri}
                 />
               ))}
