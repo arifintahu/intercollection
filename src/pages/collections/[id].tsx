@@ -9,6 +9,15 @@ import {
   Tag,
   useColorModeValue,
   HStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
 } from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
@@ -32,6 +41,8 @@ export default function CollectionsDetail() {
   const address = useSelector(selectAddress)
   const [denom, setDenom] = useState<Denom>()
   const [nfts, setNFTs] = useState<NFTExtend[]>([])
+  const [selectedNFT, setSelectedNFT] = useState<NFTExtend>()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     const chain = getChain(chainId)
@@ -69,6 +80,12 @@ export default function CollectionsDetail() {
       })
       setNFTs(updated)
     }
+  }
+
+  const openCardNFT = (id: string) => {
+    const nft = nfts.find((item) => item.id === id)
+    setSelectedNFT(nft)
+    onOpen()
   }
 
   return (
@@ -150,11 +167,65 @@ export default function CollectionsDetail() {
                   name={item.name}
                   uri={item.uri ?? ''}
                   isOwned={item.isOwned}
+                  onClick={() => openCardNFT(item.id)}
                 />
               ))}
             </Grid>
           </Box>
         </Flex>
+
+        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>NFT Detail</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Image
+                src={
+                  isURL(selectedNFT?.uri ?? '')
+                    ? selectedNFT?.uri
+                    : templateImage
+                }
+                alt={selectedNFT?.id}
+                borderRadius="lg"
+                h={300}
+                w={'auto'}
+                mx={'auto'}
+                mb={4}
+              />
+              <Flex flexDirection={'column'} gap={0} mb={4}>
+                <Text fontSize={'sm'}>NFT ID</Text>
+                <Text fontWeight={'semibold'}>{selectedNFT?.id}</Text>
+              </Flex>
+              <Flex flexDirection={'column'} gap={0} mb={4}>
+                <Text fontSize={'sm'}>Name</Text>
+                <Text fontWeight={'semibold'}>
+                  {!!selectedNFT?.name ? selectedNFT?.name : '-'}
+                </Text>
+              </Flex>
+              <Flex flexDirection={'column'} gap={0} mb={4}>
+                <Text fontSize={'sm'}>Owner</Text>
+                <Text fontWeight={'semibold'}>{selectedNFT?.owner}</Text>
+              </Flex>
+              <Flex flexDirection={'column'} gap={0} mb={4}>
+                <Text fontSize={'sm'}>URI</Text>
+                <Text fontWeight={'semibold'}>
+                  {!!selectedNFT?.uri ? selectedNFT?.uri : '-'}
+                </Text>
+              </Flex>
+              <Flex flexDirection={'column'} gap={0} mb={4}>
+                <Text fontSize={'sm'}>Data</Text>
+                <Text fontWeight={'semibold'}>
+                  {!!selectedNFT?.data ? selectedNFT?.data : '-'}
+                </Text>
+              </Flex>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="orange">Transfer</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </main>
     </>
   )

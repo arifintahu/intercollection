@@ -5,44 +5,45 @@ import {
   CardBody,
   Stack,
   Image,
-  Link,
   Box,
   Tag,
   useColorModeValue,
 } from '@chakra-ui/react'
 import { isURL, templateImage } from '@/utils/helpers'
-import NextLink from 'next/link'
+import { MouseEventHandler } from 'react'
 
 type CardNFTProps = {
   id: string
   name: string
   uri: string
   isOwned?: boolean
+  onClick: MouseEventHandler
 }
 
-export default function CardNFT({ id, name, uri, isOwned }: CardNFTProps) {
+export default function CardNFT({
+  id,
+  name,
+  uri,
+  isOwned,
+  onClick,
+}: CardNFTProps) {
   return (
     <Card maxW="sm" shadow={'none'}>
       <CardBody>
         <Box position={'relative'}>
-          <Link
-            as={NextLink}
-            href={'/nfts/' + id}
-            style={{ textDecoration: 'none' }}
-            _focus={{ boxShadow: 'none' }}
-          >
-            <Image
-              src={isURL(uri) ? uri : templateImage}
-              alt={id}
-              borderRadius="lg"
-              h={200}
-              w={200}
-              transition={'all 0.5s ease-in-out'}
-              _hover={{
-                transform: 'scale(1.1,1.1)',
-              }}
-            />
-          </Link>
+          <Image
+            src={isURL(uri) ? uri : templateImage}
+            alt={id}
+            borderRadius="lg"
+            h={200}
+            w={200}
+            transition={'all 0.5s ease-in-out'}
+            _hover={{
+              transform: 'scale(1.1,1.1)',
+            }}
+            cursor={'pointer'}
+            onClick={onClick}
+          />
           {isOwned === true && (
             <Tag
               position={'absolute'}
