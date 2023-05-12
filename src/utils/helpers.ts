@@ -33,15 +33,25 @@ export const trimAddress = (address: string): string => {
 
 export const trimDenom = (denomId: string): string => {
   if (denomId.startsWith('ibc/')) {
-    const first = denomId.slice(0, 10)
+    const first = denomId.slice(0, 14)
     const last = denomId.slice(denomId.length - 5, denomId.length)
     return first + '...' + last
-  } else if (denomId.length > 18) {
+  } else if (denomId.length > 20) {
     const first = denomId.slice(0, 14)
-    const last = denomId.slice(denomId.length - 3, denomId.length)
+    const last = denomId.slice(denomId.length - 5, denomId.length)
     return first + '...' + last
   } else {
     return denomId
+  }
+}
+
+export const trimTokenId = (tokenId: string): string => {
+  if (tokenId.length > 30) {
+    const first = tokenId.slice(0, 22)
+    const last = tokenId.slice(tokenId.length - 5, tokenId.length)
+    return first + '...' + last
+  } else {
+    return tokenId
   }
 }
 

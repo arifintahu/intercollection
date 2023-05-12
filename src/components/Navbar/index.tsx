@@ -16,6 +16,7 @@ import {
   ModalCloseButton,
   ModalBody,
   Text,
+  HStack,
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useState, useEffect, useRef } from 'react'
@@ -93,14 +94,24 @@ export default function Navbar() {
               </Heading>
             </Link>
             {!!address ? (
-              <Link
-                as={NextLink}
-                href={'/mycollections'}
-                style={{ textDecoration: 'none' }}
-                _focus={{ boxShadow: 'none' }}
-              >
-                <Button>My Collections</Button>
-              </Link>
+              <HStack>
+                <Link
+                  as={NextLink}
+                  href={'/mycollections'}
+                  style={{ textDecoration: 'none' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  <Button>My Collections</Button>
+                </Link>
+                <Link
+                  as={NextLink}
+                  href={'/transfer'}
+                  style={{ textDecoration: 'none' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  <Button>Transfer</Button>
+                </Link>
+              </HStack>
             ) : (
               <></>
             )}
