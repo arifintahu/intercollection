@@ -10,6 +10,7 @@ import {
   Select,
   useColorModeValue,
   Button,
+  Input,
 } from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
@@ -27,6 +28,7 @@ export default function Transfer() {
   const [destChainId, setDestChainId] = useState('')
   const [selectedDenom, setSelectedDenom] = useState('')
   const [selectedToken, setSelectedToken] = useState('')
+  const [recipientAddress, setRecipientAddress] = useState('')
   const [isIBC, setIsIBC] = useState(false)
 
   const chainId = useSelector(selectChainId)
@@ -81,8 +83,12 @@ export default function Transfer() {
     setSelectedToken(event.target.value as string)
   }
 
+  const handleRecipientAddress = (event: any) => {
+    setRecipientAddress(event.target.value as string)
+  }
+
   const handleTransfer = () => {
-    console.log(selectedDenom, selectedToken)
+    console.log(selectedDenom, selectedToken, recipientAddress)
   }
 
   return (
@@ -164,6 +170,16 @@ export default function Transfer() {
                       </option>
                     ))}
                   </Select>
+                </Box>
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
+                    Recipient Address
+                  </Heading>
+                  <Input
+                    mt={2}
+                    placeholder="Address"
+                    onChange={handleRecipientAddress}
+                  ></Input>
                 </Box>
                 <Button colorScheme="orange" onClick={handleTransfer}>
                   {isIBC ? 'IBC Transfer' : 'Transfer'}
