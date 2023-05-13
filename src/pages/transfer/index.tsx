@@ -38,6 +38,9 @@ export default function Transfer() {
       getCollectionsByOwner(chain.rest, address)
         .then((response) => {
           setIdCollections(response.owner.id_collections)
+          if (response.owner.id_collections.length) {
+            setSelectedDenom(response.owner.id_collections[0].denom_id)
+          }
         })
         .catch(console.error)
 
@@ -51,6 +54,20 @@ export default function Transfer() {
     }
   }, [chainId, destChainId])
 
+  useEffect(() => {
+    if (selectedDenom && idCollections.length) {
+      const idCollection = idCollections.find(
+        (item) => item.denom_id === selectedDenom
+      )
+      if (idCollection) {
+        setTokenIds(idCollection.token_ids)
+        if (idCollection.token_ids.length) {
+          setSelectedToken(idCollection.token_ids[0])
+        }
+      }
+    }
+  }, [selectedDenom, idCollections])
+
   const handleSelectDestChain = (event: any) => {
     setDestChainId(event.target.value as string)
   }
@@ -58,14 +75,14 @@ export default function Transfer() {
   const handleSelectDenom = (event: any) => {
     const denom = event.target.value as string
     setSelectedDenom(denom)
-    const idCollection = idCollections.find((item) => item.denom_id === denom)
-    if (idCollection) {
-      setTokenIds(idCollection.token_ids)
-    }
   }
 
   const handleSelectToken = (event: any) => {
     setSelectedToken(event.target.value as string)
+  }
+
+  const handleTransfer = () => {
+    console.log(selectedDenom, selectedToken)
   }
 
   return (
@@ -118,7 +135,13 @@ export default function Transfer() {
                   <Heading size="xs" textTransform="uppercase">
                     Denom
                   </Heading>
-                  <Select pt={2} onChange={handleSelectDenom}>
+                  <Select
+                    pt={2}
+                    defaultValue={
+                      idCollections.length ? idCollections[0].denom_id : ''
+                    }
+                    onChange={handleSelectDenom}
+                  >
                     {idCollections.map((item) => (
                       <option key={item.denom_id} value={item.denom_id}>
                         {trimDenom(item.denom_id)}
@@ -130,7 +153,11 @@ export default function Transfer() {
                   <Heading size="xs" textTransform="uppercase">
                     NFT
                   </Heading>
-                  <Select pt={2} onChange={handleSelectToken}>
+                  <Select
+                    pt={2}
+                    defaultValue={tokenIds.length ? tokenIds[0] : ''}
+                    onChange={handleSelectToken}
+                  >
                     {tokenIds.map((val) => (
                       <option key={val} value={val}>
                         {trimTokenId(val)}
@@ -138,7 +165,7 @@ export default function Transfer() {
                     ))}
                   </Select>
                 </Box>
-                <Button colorScheme="orange">
+                <Button colorScheme="orange" onClick={handleTransfer}>
                   {isIBC ? 'IBC Transfer' : 'Transfer'}
                 </Button>
               </Stack>
