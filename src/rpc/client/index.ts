@@ -1,4 +1,5 @@
 import { Tendermint34Client, WebsocketClient } from '@cosmjs/tendermint-rpc'
+export { CustomSigningStargateClient } from './signingclient'
 
 const replaceHTTPtoWebsocket = (url: string): string => {
   return url.replace('http', 'ws')

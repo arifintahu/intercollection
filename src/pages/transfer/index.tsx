@@ -15,11 +15,13 @@ import {
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { GasPrice } from '@cosmjs/stargate'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
 import { getChain, getDestinationChains, DestinationChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
 import { selectAddress } from '@/store/accountSlice'
 import { trimDenom, trimTokenId } from '@/utils/helpers'
+import { CustomSigningStargateClient } from '@/rpc/client'
 
 export default function Transfer() {
   const [idCollections, setIdCollections] = useState<IDCollection[]>([])
@@ -87,8 +89,37 @@ export default function Transfer() {
     setRecipientAddress(event.target.value as string)
   }
 
-  const handleTransfer = () => {
+  const handleTransfer = async () => {
     console.log(selectedDenom, selectedToken, recipientAddress)
+    if (window.keplr) {
+      await window.keplr.enable(chainId)
+      const offlineSigner = window.keplr.getOfflineSigner(chainId)
+      const accounts = await offlineSigner.getAccounts()
+
+      const chain = getChain(chainId)
+
+      if (chain) {
+        const client: CustomSigningStargateClient =
+          await CustomSigningStargateClient.connectWithSigner(
+            chain?.rpc,
+            offlineSigner,
+            {
+              gasPrice: GasPrice.fromString('1000auptick'),
+            }
+          )
+
+        const resp = await client.nftTransfer(
+          selectedToken,
+          selectedDenom,
+          accounts[0].address,
+          recipientAddress,
+          'auto'
+        )
+        console.log(resp)
+      }
+    } else {
+      alert('Please install keplr extension')
+    }
   }
 
   return (
