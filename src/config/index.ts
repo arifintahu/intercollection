@@ -6,6 +6,7 @@ export interface Chain {
   readonly rpc: string
   readonly rest: string
   readonly json_rpc: string
+  readonly is_eth_signer: boolean
 }
 export interface DestinationChain {
   readonly chain_id: string
