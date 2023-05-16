@@ -80,6 +80,10 @@ export class CustomSigningStargateClient extends SigningStargateClient {
         denomId: denomId,
         sender: sender,
         recipient: recipient,
+        name: '[do-not-modify]',
+        uri: '[do-not-modify]',
+        uriHash: '[do-not-modify]',
+        data: '[do-not-modify]',
       },
     }
     return this.signAndBroadcast(sender, [transferNFTMsg], fee, memo)
