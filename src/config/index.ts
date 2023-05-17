@@ -7,6 +7,7 @@ export interface Chain {
   readonly rest: string
   readonly json_rpc: string
   readonly is_eth_signer: boolean
+  readonly gas_price: string
 }
 export interface DestinationChain {
   readonly chain_id: string

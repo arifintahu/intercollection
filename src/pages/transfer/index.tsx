@@ -11,11 +11,12 @@ import {
   useColorModeValue,
   Button,
   Input,
+  useToast,
 } from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { GasPrice } from '@cosmjs/stargate'
+import { DeliverTxResponse, GasPrice } from '@cosmjs/stargate'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
 import { getChain, getDestinationChains, DestinationChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
@@ -35,6 +36,8 @@ export default function Transfer() {
 
   const chainId = useSelector(selectChainId)
   const address = useSelector(selectAddress)
+
+  const toast = useToast()
 
   useEffect(() => {
     const chain = getChain(chainId)
@@ -90,7 +93,6 @@ export default function Transfer() {
   }
 
   const handleTransfer = async () => {
-    console.log(selectedDenom, selectedToken, recipientAddress)
     if (window.keplr) {
       await window.keplr.enable(chainId)
       const offlineSigner = window.keplr.getOfflineSigner(chainId)
@@ -104,21 +106,57 @@ export default function Transfer() {
             chain?.rpc,
             offlineSigner,
             {
-              gasPrice: GasPrice.fromString('1000auptick'),
+              gasPrice: GasPrice.fromString(chain.gas_price),
             }
           )
 
-        const resp = await client.nftTransfer(
-          selectedToken,
-          selectedDenom,
-          accounts[0].address,
-          recipientAddress,
-          'auto'
-        )
-        console.log(resp)
+        const resp = await client
+          .nftTransfer(
+            selectedToken,
+            selectedDenom,
+            accounts[0].address,
+            recipientAddress,
+            'auto'
+          )
+          .catch((err: Error) => {
+            showError('Error Transfer NFT', err.message)
+          })
+
+        if (resp) {
+          showResponse(resp)
+        }
       }
     } else {
       alert('Please install keplr extension')
+    }
+  }
+
+  const showError = (title: string, message: string) => {
+    toast({
+      title: title,
+      description: message,
+      status: 'error',
+      isClosable: true,
+    })
+  }
+
+  const showResponse = (resp: DeliverTxResponse) => {
+    if (resp.code === 0) {
+      toast({
+        title: 'Tx Success',
+        description: `Tx Hash: ${resp.transactionHash}`,
+        status: 'success',
+        duration: 15000,
+        isClosable: true,
+      })
+    } else {
+      toast({
+        title: 'Tx Failed',
+        description: `Error code: ${resp.code}, Tx Hash: ${resp.transactionHash}`,
+        status: 'error',
+        duration: 15000,
+        isClosable: true,
+      })
     }
   }
 
