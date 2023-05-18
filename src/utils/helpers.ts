@@ -68,3 +68,25 @@ export const showBalance = (denom: string, amount: number) => {
   }
   return ''
 }
+
+export const extractQueryPath = (asPath: string): Record<string, string> => {
+  const query: Record<string, string> = {}
+  const indexQuery = asPath.indexOf('?')
+  if (indexQuery === -1) {
+    return query
+  }
+  const rawQueries = asPath.slice(indexQuery + 1).split('&')
+  if (!rawQueries.length) {
+    return query
+  }
+
+  for (const rawQuery of rawQueries) {
+    const params = rawQuery.split('=')
+    if (params.length !== 2) {
+      continue
+    }
+    query[params[0]] = decodeURIComponent(params[1])
+  }
+
+  return query
+}

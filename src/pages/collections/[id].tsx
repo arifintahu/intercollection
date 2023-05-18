@@ -88,6 +88,10 @@ export default function CollectionsDetail() {
     onOpen()
   }
 
+  const handleTransfer = (denomId: string, nftId: string) => {
+    router.push({ pathname: '/transfer' }, { query: { denomId, nftId } })
+  }
+
   return (
     <>
       <Head>
@@ -228,7 +232,14 @@ export default function CollectionsDetail() {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="orange">Transfer</Button>
+              {address === selectedNFT?.owner && (
+                <Button
+                  colorScheme="orange"
+                  onClick={() => handleTransfer(id as string, selectedNFT?.id)}
+                >
+                  Transfer
+                </Button>
+              )}
             </ModalFooter>
           </ModalContent>
         </Modal>

@@ -16,15 +16,17 @@ import {
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
 import { DeliverTxResponse, GasPrice } from '@cosmjs/stargate'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
 import { getChain, getDestinationChains, DestinationChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
 import { selectAddress } from '@/store/accountSlice'
-import { trimDenom, trimTokenId } from '@/utils/helpers'
+import { trimDenom, trimTokenId, extractQueryPath } from '@/utils/helpers'
 import { CustomSigningStargateClient } from '@/rpc/client'
 
 export default function Transfer() {
+  const router = useRouter()
   const [idCollections, setIdCollections] = useState<IDCollection[]>([])
   const [destChains, setDestChains] = useState<DestinationChain[]>([])
   const [tokenIds, setTokenIds] = useState<string[]>([])
@@ -46,7 +48,24 @@ export default function Transfer() {
         .then((response) => {
           setIdCollections(response.owner.id_collections)
           if (response.owner.id_collections.length) {
-            setSelectedDenom(response.owner.id_collections[0].denom_id)
+            const { denomId, nftId } = extractQueryPath(router.asPath)
+            if (denomId) {
+              setSelectedDenom(denomId)
+            } else {
+              setSelectedDenom(response.owner.id_collections[0].denom_id)
+            }
+
+            if (nftId) {
+              const idCollection = idCollections.find(
+                (item) => item.denom_id === denomId
+              )
+              if (idCollection) {
+                setTokenIds(idCollection.token_ids)
+                if (idCollection.token_ids.some((item) => item === nftId)) {
+                  setSelectedToken(nftId)
+                }
+              }
+            }
           }
         })
         .catch(console.error)
@@ -68,7 +87,7 @@ export default function Transfer() {
       )
       if (idCollection) {
         setTokenIds(idCollection.token_ids)
-        if (idCollection.token_ids.length) {
+        if (idCollection.token_ids.length && !selectedToken) {
           setSelectedToken(idCollection.token_ids[0])
         }
       }
@@ -212,9 +231,7 @@ export default function Transfer() {
                   </Heading>
                   <Select
                     pt={2}
-                    defaultValue={
-                      idCollections.length ? idCollections[0].denom_id : ''
-                    }
+                    value={selectedDenom}
                     onChange={handleSelectDenom}
                   >
                     {idCollections.map((item) => (
@@ -230,7 +247,7 @@ export default function Transfer() {
                   </Heading>
                   <Select
                     pt={2}
-                    defaultValue={tokenIds.length ? tokenIds[0] : ''}
+                    value={selectedToken}
                     onChange={handleSelectToken}
                   >
                     {tokenIds.map((val) => (
