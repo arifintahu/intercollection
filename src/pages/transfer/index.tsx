@@ -17,7 +17,11 @@ import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-import { DeliverTxResponse, GasPrice } from '@cosmjs/stargate'
+import {
+  DeliverTxResponse,
+  GasPrice,
+  assertIsDeliverTxSuccess,
+} from '@cosmjs/stargate'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
 import { getChain, getDestinationChains, DestinationChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
@@ -142,6 +146,7 @@ export default function Transfer() {
           })
 
         if (resp) {
+          assertIsDeliverTxSuccess(resp)
           showResponse(resp)
         }
       }
@@ -163,7 +168,7 @@ export default function Transfer() {
     if (resp.code === 0) {
       toast({
         title: 'Tx Success',
-        description: `Tx Hash: ${resp.transactionHash}`,
+        description: `TxHash: ${resp.transactionHash}`,
         status: 'success',
         duration: 15000,
         isClosable: true,
@@ -171,7 +176,7 @@ export default function Transfer() {
     } else {
       toast({
         title: 'Tx Failed',
-        description: `Error code: ${resp.code}, Tx Hash: ${resp.transactionHash}`,
+        description: `Error code: ${resp.code}, TxHash: ${resp.transactionHash}`,
         status: 'error',
         duration: 15000,
         isClosable: true,
