@@ -41,6 +41,7 @@ export default function CollectionsDetail() {
   const address = useSelector(selectAddress)
   const [denom, setDenom] = useState<Denom>()
   const [nfts, setNFTs] = useState<NFTExtend[]>([])
+  const [uriImage, setUriImage] = useState('')
   const [selectedNFT, setSelectedNFT] = useState<NFTExtend>()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -51,6 +52,7 @@ export default function CollectionsDetail() {
         .then((response) => {
           setDenom(response.collection.denom)
           setNFTs(response.collection.nfts)
+          setUriImage(response.collection.denom.uri ?? '')
         })
         .catch(console.error)
     }
@@ -92,6 +94,10 @@ export default function CollectionsDetail() {
     router.push({ pathname: '/transfer' }, { query: { denomId, nftId } })
   }
 
+  const setTemplateImage = () => {
+    setUriImage(templateImage)
+  }
+
   return (
     <>
       <Head>
@@ -108,12 +114,13 @@ export default function CollectionsDetail() {
           mb={12}
         >
           <Image
-            src={isURL(denom?.uri ?? '') ? denom?.uri : templateImage}
+            src={isURL(uriImage) ? uriImage : templateImage}
             alt={denom?.name}
             borderRadius="lg"
             h={200}
             w={200}
             mb={6}
+            onError={setTemplateImage}
           />
           <Heading size="lg" mb={2}>
             {denom?.name ?? '-'}

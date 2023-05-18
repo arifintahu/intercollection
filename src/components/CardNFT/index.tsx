@@ -10,7 +10,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { isURL, templateImage } from '@/utils/helpers'
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, useState } from 'react'
 
 type CardNFTProps = {
   id: string
@@ -27,12 +27,18 @@ export default function CardNFT({
   isOwned,
   onClick,
 }: CardNFTProps) {
+  const [uriImage, setUriImage] = useState(uri)
+
+  const setTemplateImage = () => {
+    setUriImage(templateImage)
+  }
+
   return (
     <Card maxW="sm" shadow={'none'}>
       <CardBody>
         <Box position={'relative'}>
           <Image
-            src={isURL(uri) ? uri : templateImage}
+            src={isURL(uriImage) ? uriImage : templateImage}
             alt={id}
             borderRadius="lg"
             h={200}
@@ -42,7 +48,9 @@ export default function CardNFT({
               transform: 'scale(1.1,1.1)',
             }}
             cursor={'pointer'}
+            objectFit={'cover'}
             onClick={onClick}
+            onError={setTemplateImage}
           />
           {isOwned === true && (
             <Tag

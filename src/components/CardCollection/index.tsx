@@ -12,6 +12,7 @@ import {
 import { isNativeNFT, isURL } from '@/utils/helpers'
 import NextLink from 'next/link'
 import { templateImage } from '@/utils/helpers'
+import { useState } from 'react'
 
 type CardCollectionProps = {
   id: string
@@ -25,6 +26,12 @@ export default function CardCollection({
   description,
   uri,
 }: CardCollectionProps) {
+  const [uriImage, setUriImage] = useState(uri)
+
+  const setTemplateImage = () => {
+    setUriImage(templateImage)
+  }
+
   return (
     <Card maxW="sm" shadow={'none'}>
       <CardBody>
@@ -36,7 +43,7 @@ export default function CardCollection({
             _focus={{ boxShadow: 'none' }}
           >
             <Image
-              src={isURL(uri) ? uri : templateImage}
+              src={isURL(uriImage) ? uriImage : templateImage}
               alt={id}
               borderRadius="lg"
               h={200}
@@ -45,6 +52,8 @@ export default function CardCollection({
               _hover={{
                 transform: 'scale(1.1,1.1)',
               }}
+              objectFit={'cover'}
+              onError={setTemplateImage}
             />
           </Link>
           <Tag
