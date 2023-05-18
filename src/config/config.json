@@ -7,7 +7,7 @@
       "rest": "http://52.220.252.160:1317",
       "json_rpc": "http://52.220.252.160:8545",
       "is_eth_signer": true,
-      "gas_price": "1000auptick"
+      "gas_price": "100auptick"
     }
   ],
   "destination_chains": [

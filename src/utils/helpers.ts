@@ -1,6 +1,8 @@
 export const templateImage =
   'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
 
+export const defaultTimeout = 300_000_000_000
+
 export const isNativeNFT = (id: string): boolean => {
   if (id.startsWith('ibc')) {
     return false
@@ -89,4 +91,10 @@ export const extractQueryPath = (asPath: string): Record<string, string> => {
   }
 
   return query
+}
+
+export const getTimeoutTimestamp = (): number => {
+  const now = new Date().getTime()
+  const miliToNano = 1_000_000
+  return now * miliToNano + defaultTimeout
 }

@@ -32,6 +32,11 @@ import {
   MsgTransferNFTEncodeObject,
   typeUrlMsgTransferNFT,
 } from '@/rpc/uptick/collection/messages'
+import {
+  ibcNFTTransferTypes,
+  IBCMsgTransferNFTEncodeObject,
+  typeUrlIBCMsgTransferNFT,
+} from '@/rpc/ibc/nft_transfer/messages'
 import { connectWebsocketClient } from '.'
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
 import assert from 'assert'
@@ -42,6 +47,7 @@ import { getChain } from '@/config'
 export const customRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
   ...uptickCollectionTypes,
+  ...ibcNFTTransferTypes,
 ]
 
 function createDefaultRegistry(): Registry {
@@ -259,5 +265,30 @@ export class CustomSigningStargateClient extends SigningStargateClient {
       },
     }
     return this.signAndBroadcast(sender, [transferNFTMsg], fee, memo)
+  }
+
+  public async nftTransferIBC(
+    id: string,
+    denomId: string,
+    sender: string,
+    receiver: string,
+    sourceChannel: string,
+    timeoutTimestamp: number,
+    fee: StdFee | 'auto' | number,
+    memo = ''
+  ): Promise<DeliverTxResponse> {
+    const ibcTransferNFTMsg: IBCMsgTransferNFTEncodeObject = {
+      typeUrl: typeUrlIBCMsgTransferNFT,
+      value: {
+        sourcePort: 'nft-transfer',
+        sourceChannel: sourceChannel,
+        classId: denomId,
+        tokenIds: [id],
+        sender: sender,
+        receiver: receiver,
+        timeoutTimestamp: timeoutTimestamp,
+      },
+    }
+    return this.signAndBroadcast(sender, [ibcTransferNFTMsg], fee, memo)
   }
 }

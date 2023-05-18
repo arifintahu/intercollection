@@ -23,10 +23,20 @@ import {
   assertIsDeliverTxSuccess,
 } from '@cosmjs/stargate'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
-import { getChain, getDestinationChains, DestinationChain } from '@/config'
+import {
+  getChain,
+  getDestinationChains,
+  DestinationChain,
+  getChannel,
+} from '@/config'
 import { selectChainId } from '@/store/chainSlice'
 import { selectAddress } from '@/store/accountSlice'
-import { trimDenom, trimTokenId, extractQueryPath } from '@/utils/helpers'
+import {
+  trimDenom,
+  trimTokenId,
+  extractQueryPath,
+  getTimeoutTimestamp,
+} from '@/utils/helpers'
 import { CustomSigningStargateClient } from '@/rpc/client'
 
 export default function Transfer() {
@@ -39,6 +49,7 @@ export default function Transfer() {
   const [selectedToken, setSelectedToken] = useState('')
   const [recipientAddress, setRecipientAddress] = useState('')
   const [isIBC, setIsIBC] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const chainId = useSelector(selectChainId)
   const address = useSelector(selectAddress)
@@ -133,29 +144,66 @@ export default function Transfer() {
             }
           )
 
-        const resp = await client
-          .nftTransfer(
-            selectedToken,
-            selectedDenom,
-            accounts[0].address,
-            recipientAddress,
-            'auto'
-          )
-          .catch((err: Error) => {
-            showError('Error Transfer NFT', err.message)
-          })
+        if (isIBC && !!destChainId) {
+          const channel = getChannel(chainId, destChainId)
+          if (channel) {
+            setIsLoading(true)
+            const timeoutTimestamp = getTimeoutTimestamp()
+            const resp = await client
+              .nftTransferIBC(
+                selectedToken,
+                selectedDenom,
+                accounts[0].address,
+                recipientAddress,
+                channel.src_channel,
+                timeoutTimestamp,
+                'auto'
+              )
+              .catch((err: Error) => {
+                showError('Error Transfer NFT', err.message)
+              })
 
-        if (resp) {
-          assertIsDeliverTxSuccess(resp)
-          showResponse(resp)
+            if (resp) {
+              showResponse(resp)
+            }
+          } else {
+            toast({
+              title: 'IBC channel not found',
+              description: `Channel between ${chainId} and ${destChainId} is not found`,
+              status: 'warning',
+              isClosable: true,
+            })
+          }
+        } else {
+          setIsLoading(true)
+          const resp = await client
+            .nftTransfer(
+              selectedToken,
+              selectedDenom,
+              accounts[0].address,
+              recipientAddress,
+              'auto'
+            )
+            .catch((err: Error) => {
+              showError('Error Transfer NFT', err.message)
+            })
+
+          if (resp) {
+            showResponse(resp)
+          }
         }
       }
     } else {
-      alert('Please install keplr extension')
+      toast({
+        title: 'Please install keplr extension',
+        status: 'warning',
+        isClosable: true,
+      })
     }
   }
 
   const showError = (title: string, message: string) => {
+    setIsLoading(false)
     toast({
       title: title,
       description: message,
@@ -165,6 +213,8 @@ export default function Transfer() {
   }
 
   const showResponse = (resp: DeliverTxResponse) => {
+    assertIsDeliverTxSuccess(resp)
+    setIsLoading(false)
     if (resp.code === 0) {
       toast({
         title: 'Tx Success',
@@ -272,7 +322,12 @@ export default function Transfer() {
                     onChange={handleRecipientAddress}
                   ></Input>
                 </Box>
-                <Button colorScheme="orange" onClick={handleTransfer}>
+                <Button
+                  colorScheme="orange"
+                  onClick={handleTransfer}
+                  isLoading={isLoading}
+                  loadingText="Processing"
+                >
                   {isIBC ? 'IBC Transfer' : 'Transfer'}
                 </Button>
               </Stack>

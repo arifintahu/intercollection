@@ -28,7 +28,7 @@ export function getChains(): Chain[] {
 }
 
 export function getChain(chainId: string): Chain | null {
-  const chain = config.chains.find((item) => item.chain_id == chainId)
+  const chain = config.chains.find((item) => item.chain_id === chainId)
   if (!chain) {
     return null
   }
@@ -41,4 +41,16 @@ export function getDestinationChains(): DestinationChain[] {
 
 export function getChannels(): Channel[] {
   return config.channels
+}
+
+export function getChannel(
+  srcChainId: string,
+  dstChainId: string
+): Channel | null {
+  const path = srcChainId + '<>' + dstChainId
+  const channel = config.channels.find((item) => item.path === path)
+  if (!channel) {
+    return null
+  }
+  return channel
 }
