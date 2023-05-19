@@ -15,4 +15,5 @@ class Request {
   }
 }
 
-export default new Request()
+const request = new Request()
+export default request
