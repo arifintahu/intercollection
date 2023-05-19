@@ -98,7 +98,8 @@ export const getTimeoutTimestamp = (): number => {
   return now * miliToNano + defaultTimeout
 }
 
-export const getTemplateImage = (host: string): string => {
+export const getTemplateImage = (): string => {
+  const host = window ? window.location.host : ''
   return host.includes('github.io')
     ? '/intercollection' + templateImage
     : templateImage

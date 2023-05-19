@@ -30,7 +30,7 @@ export default function CardNFT({
   const [uriImage, setUriImage] = useState(uri)
 
   const setTemplateImage = () => {
-    setUriImage(getTemplateImage(window.location.host))
+    setUriImage(getTemplateImage())
   }
 
   return (
@@ -38,11 +38,7 @@ export default function CardNFT({
       <CardBody>
         <Box position={'relative'}>
           <Image
-            src={
-              isURL(uriImage)
-                ? uriImage
-                : getTemplateImage(window.location.host)
-            }
+            src={isURL(uriImage) ? uriImage : getTemplateImage()}
             alt={id}
             borderRadius="lg"
             h={200}

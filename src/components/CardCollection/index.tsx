@@ -29,7 +29,7 @@ export default function CardCollection({
   const [uriImage, setUriImage] = useState(uri)
 
   const setTemplateImage = () => {
-    setUriImage(getTemplateImage(window.location.host))
+    setUriImage(getTemplateImage())
   }
 
   return (
@@ -43,11 +43,7 @@ export default function CardCollection({
             _focus={{ boxShadow: 'none' }}
           >
             <Image
-              src={
-                isURL(uriImage)
-                  ? uriImage
-                  : getTemplateImage(window.location.host)
-              }
+              src={isURL(uriImage) ? uriImage : getTemplateImage()}
               alt={id}
               borderRadius="lg"
               h={200}

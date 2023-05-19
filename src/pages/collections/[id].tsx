@@ -95,7 +95,7 @@ export default function CollectionsDetail() {
   }
 
   const setTemplateImage = () => {
-    setUriImage(getTemplateImage(window.location.host))
+    setUriImage(getTemplateImage())
   }
 
   return (
@@ -114,11 +114,7 @@ export default function CollectionsDetail() {
           mb={12}
         >
           <Image
-            src={
-              isURL(uriImage)
-                ? uriImage
-                : getTemplateImage(window.location.host)
-            }
+            src={isURL(uriImage) ? uriImage : getTemplateImage()}
             alt={denom?.name}
             borderRadius="lg"
             h={200}
@@ -199,7 +195,7 @@ export default function CollectionsDetail() {
                 src={
                   isURL(selectedNFT?.uri ?? '')
                     ? selectedNFT?.uri
-                    : getTemplateImage(window.location.host)
+                    : getTemplateImage()
                 }
                 alt={selectedNFT?.id}
                 borderRadius="lg"
