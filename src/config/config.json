@@ -3,8 +3,8 @@
     {
       "chain_id": "uptick_7000-2",
       "description": "Uptick Testnet",
-      "rpc": "http://52.220.252.160:26657",
-      "rest": "http://52.220.252.160:1317",
+      "rpc": "https://peer1.testnet.uptick.network:36657",
+      "rest": "https://peer1.testnet.uptick.network:1318",
       "json_rpc": "http://52.220.252.160:8545",
       "is_eth_signer": true,
       "gas_price": "100auptick"
