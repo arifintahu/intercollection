@@ -99,8 +99,11 @@ export const getTimeoutTimestamp = (): number => {
 }
 
 export const getTemplateImage = (): string => {
-  const host = window ? window.location.host : ''
-  return host.includes('github.io')
+  let hostname: string = ''
+  if (typeof window !== 'undefined') {
+    hostname = window.location.hostname
+  }
+  return hostname.includes('github.io')
     ? '/intercollection' + templateImage
     : templateImage
 }
