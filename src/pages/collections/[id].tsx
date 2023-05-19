@@ -121,6 +121,7 @@ export default function CollectionsDetail() {
             w={200}
             mb={6}
             onError={setTemplateImage}
+            objectFit={'cover'}
           />
           <Heading size="lg" mb={2}>
             {denom?.name ?? '-'}
