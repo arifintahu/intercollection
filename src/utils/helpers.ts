@@ -1,4 +1,6 @@
-export const templateImage = '/images/no-preview.jpg'
+export const templateImage = window.location.host.includes('github.io')
+  ? '/intercollection/images/no-preview.jpg'
+  : '/images/no-preview.jpg'
 
 export const defaultTimeout = 300_000_000_000
 
