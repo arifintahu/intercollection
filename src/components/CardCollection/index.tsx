@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { isNativeNFT, isURL } from '@/utils/helpers'
 import NextLink from 'next/link'
-import { templateImage } from '@/utils/helpers'
+import { getTemplateImage } from '@/utils/helpers'
 import { useState } from 'react'
 
 type CardCollectionProps = {
@@ -29,7 +29,7 @@ export default function CardCollection({
   const [uriImage, setUriImage] = useState(uri)
 
   const setTemplateImage = () => {
-    setUriImage(templateImage)
+    setUriImage(getTemplateImage(window.location.host))
   }
 
   return (
@@ -43,7 +43,11 @@ export default function CardCollection({
             _focus={{ boxShadow: 'none' }}
           >
             <Image
-              src={isURL(uriImage) ? uriImage : templateImage}
+              src={
+                isURL(uriImage)
+                  ? uriImage
+                  : getTemplateImage(window.location.host)
+              }
               alt={id}
               borderRadius="lg"
               h={200}

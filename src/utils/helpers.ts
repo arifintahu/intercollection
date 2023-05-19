@@ -1,6 +1,4 @@
-export const templateImage = window.location.host.includes('github.io')
-  ? '/intercollection/images/no-preview.jpg'
-  : '/images/no-preview.jpg'
+export const templateImage = '/images/no-preview.jpg'
 
 export const defaultTimeout = 300_000_000_000
 
@@ -98,4 +96,10 @@ export const getTimeoutTimestamp = (): number => {
   const now = new Date().getTime()
   const miliToNano = 1_000_000
   return now * miliToNano + defaultTimeout
+}
+
+export const getTemplateImage = (host: string): string => {
+  return host.includes('github.io')
+    ? '/intercollection' + templateImage
+    : templateImage
 }

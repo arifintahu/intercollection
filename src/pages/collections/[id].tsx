@@ -28,7 +28,7 @@ import { selectChainId } from '@/store/chainSlice'
 import { selectAddress } from '@/store/accountSlice'
 import { getCollection, Denom, NFT } from '@/rpc/uptick/collection'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
-import { isNativeNFT, isURL, isJSON, templateImage } from '@/utils/helpers'
+import { isNativeNFT, isURL, isJSON, getTemplateImage } from '@/utils/helpers'
 import CardNFT from '@/components/CardNFT'
 
 interface NFTExtend extends NFT {
@@ -95,7 +95,7 @@ export default function CollectionsDetail() {
   }
 
   const setTemplateImage = () => {
-    setUriImage(templateImage)
+    setUriImage(getTemplateImage(window.location.host))
   }
 
   return (
@@ -114,7 +114,11 @@ export default function CollectionsDetail() {
           mb={12}
         >
           <Image
-            src={isURL(uriImage) ? uriImage : templateImage}
+            src={
+              isURL(uriImage)
+                ? uriImage
+                : getTemplateImage(window.location.host)
+            }
             alt={denom?.name}
             borderRadius="lg"
             h={200}
@@ -195,7 +199,7 @@ export default function CollectionsDetail() {
                 src={
                   isURL(selectedNFT?.uri ?? '')
                     ? selectedNFT?.uri
-                    : templateImage
+                    : getTemplateImage(window.location.host)
                 }
                 alt={selectedNFT?.id}
                 borderRadius="lg"
