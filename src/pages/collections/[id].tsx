@@ -28,7 +28,14 @@ import { selectChainId } from '@/store/chainSlice'
 import { selectAddress } from '@/store/accountSlice'
 import { getCollection, Denom, NFT } from '@/rpc/uptick/collection'
 import { getCollectionsByOwner, IDCollection } from '@/query/uptick/collection'
-import { isNativeNFT, isURL, isJSON, getTemplateImage } from '@/utils/helpers'
+import { getClassTrace, ClassTrace } from '@/query/ibc/nft_transfer'
+import {
+  isNativeNFT,
+  isURL,
+  isJSON,
+  getTemplateImage,
+  getDenomHash,
+} from '@/utils/helpers'
 import CardNFT from '@/components/CardNFT'
 
 interface NFTExtend extends NFT {
@@ -40,6 +47,7 @@ export default function CollectionsDetail() {
   const chainId = useSelector(selectChainId)
   const address = useSelector(selectAddress)
   const [denom, setDenom] = useState<Denom>()
+  const [classTrace, setClassTrace] = useState<ClassTrace>()
   const [nfts, setNFTs] = useState<NFTExtend[]>([])
   const [uriImage, setUriImage] = useState('')
   const [selectedNFT, setSelectedNFT] = useState<NFTExtend>()
@@ -70,6 +78,18 @@ export default function CollectionsDetail() {
         .catch(console.error)
     }
   }, [chainId, id, address, denom])
+
+  useEffect(() => {
+    const chain = getChain(chainId)
+    const hash = getDenomHash(denom?.id ?? '')
+    if (chain && hash) {
+      getClassTrace(chain.rest, hash)
+        .then((response) => {
+          setClassTrace(response.class_trace)
+        })
+        .catch(console.error)
+    }
+  }, [denom])
 
   const updateNFTsOwner = (idCollection: IDCollection) => {
     if (idCollection.denom_id == denom?.id) {
@@ -124,7 +144,9 @@ export default function CollectionsDetail() {
             objectFit={'cover'}
           />
           <Heading size="lg" mb={2}>
-            {denom?.name ?? '-'}
+            {isNativeNFT(denom?.id ?? '')
+              ? denom?.name ?? '-'
+              : classTrace?.base_class_id ?? '-'}
           </Heading>
           <Tag
             colorScheme="orange"
@@ -134,6 +156,16 @@ export default function CollectionsDetail() {
             {isNativeNFT(denom?.id ?? '') ? 'Native' : 'IBC'}
           </Tag>
           <Text mb={4}>{denom?.description ?? '-'}</Text>
+          {!isNativeNFT(denom?.id ?? '') && (
+            <>
+              <Text size={'sm'} textTransform={'uppercase'} fontFamily={'mono'}>
+                Class Trace
+              </Text>
+              <Text mb={4} maxW={600} textAlign={'center'}>
+                {classTrace?.path ?? '-'}
+              </Text>
+            </>
+          )}
           <Text size={'sm'} textTransform={'uppercase'} fontFamily={'mono'}>
             Creator
           </Text>

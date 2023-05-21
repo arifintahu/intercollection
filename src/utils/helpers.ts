@@ -107,3 +107,15 @@ export const getTemplateImage = (): string => {
     ? '/intercollection' + templateImage
     : templateImage
 }
+
+export const getDenomHash = (denomId: string): string => {
+  if (isNativeNFT(denomId)) {
+    return ''
+  }
+
+  const arr = denomId.split('ibc/')
+  if (arr.length != 2) {
+    return ''
+  }
+  return arr[1]
+}
