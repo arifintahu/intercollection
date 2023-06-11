@@ -17,6 +17,7 @@ import {
   ModalBody,
   Text,
   HStack,
+  Image,
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useState, useEffect, useRef } from 'react'
@@ -84,14 +85,16 @@ export default function Navbar() {
               style={{ textDecoration: 'none' }}
               _focus={{ boxShadow: 'none' }}
             >
-              <Heading
-                size={'sm'}
-                fontFamily={'mono'}
-                textTransform={'uppercase'}
-                letterSpacing={3}
-              >
-                Inter Collection
-              </Heading>
+              <Image
+                alt="Logo"
+                src={
+                  colorMode === 'light'
+                    ? '/images/logo-dark.svg'
+                    : '/images/logo-light.svg'
+                }
+                w={130}
+                h={'auto'}
+              ></Image>
             </Link>
             {!!address ? (
               <HStack>
