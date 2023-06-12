@@ -86,6 +86,15 @@ export default function Transfer() {
         .catch(console.error)
 
       setDestChains(getDestinationChains())
+    } else {
+      toast({
+        title: 'Please connect to keplr wallet!',
+        status: 'warning',
+        duration: 9000,
+        position: 'top',
+        variant: 'left-accent',
+        isClosable: true,
+      })
     }
   }, [chainId, address])
 

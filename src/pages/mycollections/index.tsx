@@ -1,4 +1,4 @@
-import { Text, Flex, Heading, Box, Grid } from '@chakra-ui/react'
+import { Text, Flex, Heading, Box, Grid, useToast } from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -14,6 +14,8 @@ export default function MyCollections() {
   const [idCollections, setIdCollections] = useState<IDCollection[]>([])
   const address = useSelector(selectAddress)
 
+  const toast = useToast()
+
   useEffect(() => {
     const chain = getChain(chainId)
     if (chain && address) {
@@ -22,6 +24,15 @@ export default function MyCollections() {
           setIdCollections(response.owner.id_collections)
         })
         .catch(console.error)
+    } else {
+      toast({
+        title: 'Please connect to keplr wallet!',
+        status: 'warning',
+        duration: 9000,
+        position: 'top',
+        variant: 'left-accent',
+        isClosable: true,
+      })
     }
   }, [chainId, address])
 

@@ -21,7 +21,8 @@ export interface DestinationChain {
   readonly description: string
 }
 export interface Channel {
-  readonly path: string
+  readonly src_id: string
+  readonly dest_id: string
   readonly src_channel: string
 }
 export interface Config {
@@ -54,8 +55,9 @@ export function getChannel(
   srcChainId: string,
   dstChainId: string
 ): Channel | null {
-  const path = srcChainId + '<>' + dstChainId
-  const channel = config.channels.find((item) => item.path === path)
+  const channel = config.channels.find(
+    (item) => item.src_id === srcChainId && item.dest_id === dstChainId
+  )
   if (!channel) {
     return null
   }

@@ -22,20 +22,22 @@
     },
     {
       "chain_id": "gon-irishub-1",
-      "description": "IRISnet GoN"
+      "description": "IRISnet Testnet"
     },
     {
       "chain_id": "gon-flixnet-1",
-      "description": "Omniflix GoN"
+      "description": "Omniflix Testnet"
     }
   ],
   "channels": [
     {
-      "path": "uptick_7000-2<>gon-irishub-1",
+      "src_id": "uptick_7000-2",
+      "dest_id": "gon-irishub-1",
       "src_channel": "channel-3"
     },
     {
-      "path": "uptick_7000-2<>gon-flixnet-1",
+      "src_id": "uptick_7000-2",
+      "dest_id": "gon-flixnet-1",
       "src_channel": "channel-5"
     }
   ]

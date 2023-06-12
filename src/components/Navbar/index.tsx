@@ -116,28 +116,32 @@ export default function Navbar() {
                 h={'auto'}
               ></Image>
             </Link>
-            {!!address ? (
-              <HStack>
-                <Link
-                  as={NextLink}
-                  href={'/mycollections'}
-                  style={{ textDecoration: 'none' }}
-                  _focus={{ boxShadow: 'none' }}
-                >
-                  <Button>My Collections</Button>
-                </Link>
-                <Link
-                  as={NextLink}
-                  href={'/transfer'}
-                  style={{ textDecoration: 'none' }}
-                  _focus={{ boxShadow: 'none' }}
-                >
-                  <Button>Transfer</Button>
-                </Link>
-              </HStack>
-            ) : (
-              <></>
-            )}
+            <HStack>
+              <Link
+                as={NextLink}
+                href={'/'}
+                style={{ textDecoration: 'none' }}
+                _focus={{ boxShadow: 'none' }}
+              >
+                <Button>Home</Button>
+              </Link>
+              <Link
+                as={NextLink}
+                href={'/mycollections'}
+                style={{ textDecoration: 'none' }}
+                _focus={{ boxShadow: 'none' }}
+              >
+                <Button>My Collections</Button>
+              </Link>
+              <Link
+                as={NextLink}
+                href={'/transfer'}
+                style={{ textDecoration: 'none' }}
+                _focus={{ boxShadow: 'none' }}
+              >
+                <Button>Transfer</Button>
+              </Link>
+            </HStack>
           </Flex>
 
           <Flex alignItems={'center'}>
