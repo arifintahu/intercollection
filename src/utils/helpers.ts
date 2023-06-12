@@ -1,3 +1,6 @@
+import { Coin } from '@/config'
+import { Balance } from '@/query/cosmos/bank'
+
 export const templateImage = '/images/no-preview.jpg'
 
 export const defaultTimeout = 300_000_000_000
@@ -56,18 +59,15 @@ export const trimTokenId = (tokenId: string): string => {
   }
 }
 
-export const showBalance = (denom: string, amount: number) => {
-  if (denom.startsWith('a')) {
-    return `${Math.round((amount * 100) / 10 ** 18) / 100} ${denom
-      .slice(1)
-      .toUpperCase()}`
+export const showBalance = (balances: Balance[], coin: Coin) => {
+  const balance = balances.find((item) => item.denom === coin.minimalDenom)
+  if (!balance) {
+    return `0 ${coin.denom}`
   }
-  if (denom.startsWith('u')) {
-    return `${Math.round((amount * 100) / 10 ** 6) / 100} ${denom
-      .slice(1)
-      .toUpperCase()}`
-  }
-  return ''
+
+  const convertToDenom =
+    Math.floor((balance.amount * 100) / 10 ** coin.decimals) / 100
+  return `${convertToDenom.toLocaleString()} ${coin.denom}`
 }
 
 export const extractQueryPath = (asPath: string): Record<string, string> => {

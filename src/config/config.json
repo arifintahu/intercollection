@@ -7,7 +7,12 @@
       "rest": "https://peer1.testnet.uptick.network:1318",
       "json_rpc": "http://52.220.252.160:8545",
       "is_eth_signer": true,
-      "gas_price": "100auptick"
+      "gas_price": "100auptick",
+      "coin": {
+        "denom": "UPTICK",
+        "minimalDenom": "auptick",
+        "decimals": 18
+      }
     }
   ],
   "destination_chains": [

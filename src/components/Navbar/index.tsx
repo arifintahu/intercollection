@@ -18,11 +18,15 @@ import {
   Text,
   HStack,
   Image,
+  Tooltip,
+  IconButton,
 } from '@chakra-ui/react'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { CheckIcon, CopyIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import NextLink from 'next/link'
+import { FiLogOut } from 'react-icons/fi'
+
 import { getChains, Chain, getChain } from '@/config'
 import { setChainId, selectChainId } from '@/store/chainSlice'
 import { setAddress, selectAddress } from '@/store/accountSlice'
@@ -32,7 +36,9 @@ import { getBalances, Balance } from '@/query/cosmos/bank'
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()
   const [chains, setChains] = useState<Chain[]>([])
+  const [chain, setChain] = useState<Chain | null>()
   const [balances, setBalances] = useState<Balance[]>([])
+  const [isCopied, setIsCopied] = useState(false)
   const dispatch = useDispatch()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const chainId = useSelector(selectChainId)
@@ -49,12 +55,21 @@ export default function Navbar() {
 
   useEffect(() => {
     const chain = getChain(chainId)
+    setChain(chain)
     if (chain && address) {
       getBalances(chain.rest, address).then((response) => {
         setBalances(response.balances)
       })
     }
   }, [chainId, address])
+
+  useEffect(() => {
+    if (isCopied) {
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
+    }
+  }, [isCopied])
 
   const handleSelectChain = (event: any) => {
     dispatch(setChainId(event.target.value as string))
@@ -72,6 +87,11 @@ export default function Navbar() {
     } else {
       alert('Please install keplr extension')
     }
+  }
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(address)
+    setIsCopied(true)
   }
 
   return (
@@ -121,7 +141,7 @@ export default function Navbar() {
           </Flex>
 
           <Flex alignItems={'center'}>
-            <Stack direction={'row'} spacing={7}>
+            <Stack direction={'row'} alignItems={'center'} spacing={7}>
               <Select
                 variant={'outline'}
                 defaultValue={chains.length ? chains[0].chain_id : ''}
@@ -139,37 +159,72 @@ export default function Navbar() {
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
 
-              {!!address ? (
-                <Flex
-                  flexDirection={'column'}
-                  justifyContent={'center'}
-                  alignItems={'flex-end'}
-                >
-                  <Text fontSize={'sm'}>{trimAddress(address)}</Text>
-                  <Text fontSize={'sm'}>
-                    {balances.length
-                      ? showBalance(balances[0].denom, balances[0].amount)
-                      : ''}
-                  </Text>
-                </Flex>
-              ) : (
-                <Button
-                  as={'a'}
-                  display={{ base: 'none', md: 'inline-flex' }}
-                  fontSize={'md'}
-                  px={8}
-                  color={'white'}
-                  bg={'orange.500'}
-                  href={'#'}
-                  _hover={{
-                    bg: 'orange.400',
-                  }}
-                  minW={150}
-                  onClick={onOpen}
-                >
-                  Connect
-                </Button>
-              )}
+              <Flex alignItems={'center'}>
+                <Stack direction={'row'} spacing={7}>
+                  {!!address ? (
+                    <Flex
+                      borderColor={
+                        colorMode === 'light' ? 'gray.800' : 'whiteAlpha.300'
+                      }
+                      borderWidth={1}
+                      py={1}
+                      px={3}
+                      borderRadius={'md'}
+                      minW={220}
+                      justifyContent={'space-between'}
+                      alignItems={'center'}
+                    >
+                      <Flex
+                        flexDirection={'column'}
+                        justifyContent={'center'}
+                        alignItems={'flex-start'}
+                      >
+                        <Text fontSize={'sm'}>{trimAddress(address)}</Text>
+                        <Text fontSize={'sm'}>
+                          {chain ? showBalance(balances, chain.coin) : ''}
+                        </Text>
+                      </Flex>
+                      <Flex gap={1}>
+                        <Tooltip label={isCopied ? 'Copied' : 'Copy Address'}>
+                          <IconButton
+                            size={'sm'}
+                            variant={'ghost'}
+                            aria-label="Copy Address"
+                            icon={isCopied ? <CheckIcon /> : <CopyIcon />}
+                            onClick={copyAddress}
+                          />
+                        </Tooltip>
+                        <Tooltip label="Disconnect">
+                          <IconButton
+                            size={'sm'}
+                            variant={'ghost'}
+                            aria-label="Disconnect"
+                            icon={<FiLogOut />}
+                            onClick={() => dispatch(setAddress(''))}
+                          />
+                        </Tooltip>
+                      </Flex>
+                    </Flex>
+                  ) : (
+                    <Button
+                      as={'a'}
+                      display={{ base: 'none', md: 'inline-flex' }}
+                      fontSize={'md'}
+                      px={8}
+                      color={'white'}
+                      bg={'orange.500'}
+                      href={'#'}
+                      _hover={{
+                        bg: 'orange.400',
+                      }}
+                      minW={150}
+                      onClick={onOpen}
+                    >
+                      Connect Wallet
+                    </Button>
+                  )}
+                </Stack>
+              </Flex>
             </Stack>
           </Flex>
         </Flex>
@@ -182,9 +237,12 @@ export default function Navbar() {
           <ModalCloseButton />
           <ModalBody px={6} py={8}>
             <Button
-              colorScheme="orange"
-              variant="outline"
+              bg={'orange.500'}
+              _hover={{
+                bg: 'orange.400',
+              }}
               width={'full'}
+              color={'white'}
               onClick={handleKeplr}
             >
               Keplr Wallet

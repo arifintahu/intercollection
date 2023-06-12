@@ -1,5 +1,11 @@
 import config from './config.json'
 
+export interface Coin {
+  readonly denom: string
+  readonly minimalDenom: string
+  readonly decimals: number
+}
+
 export interface Chain {
   readonly chain_id: string
   readonly description: string
@@ -8,6 +14,7 @@ export interface Chain {
   readonly json_rpc: string
   readonly is_eth_signer: boolean
   readonly gas_price: string
+  readonly coin: Coin
 }
 export interface DestinationChain {
   readonly chain_id: string
