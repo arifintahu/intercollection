@@ -21,9 +21,25 @@ export interface DenomsReponse {
   denoms: Denom[]
   pagination: Pagination
 }
-export async function getDenoms(baseUrl: string): Promise<DenomsReponse> {
+export async function getDenoms(
+  baseUrl: string,
+  key: string,
+  limit?: number
+): Promise<DenomsReponse> {
   const path = '/uptick/collection/nft/denoms'
-  const response: DenomsReponse = await request.get(baseUrl, path)
+  const query: {
+    'pagination.key'?: string
+    'pagination.limit': number
+  } = {
+    'pagination.limit': 100,
+  }
+  if (!!key) {
+    query['pagination.key'] = key
+  }
+  if (!!limit) {
+    query['pagination.limit'] = limit
+  }
+  const response: DenomsReponse = await request.get(baseUrl, path, query)
   return response
 }
 
