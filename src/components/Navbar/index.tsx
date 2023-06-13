@@ -96,7 +96,14 @@ export default function Navbar() {
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={24}>
+      <Box
+        bg={useColorModeValue('gray.100', 'gray.900')}
+        px={24}
+        position={'fixed'}
+        top={0}
+        zIndex={99}
+        w={'full'}
+      >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Flex alignItems={'center'} gap={6}>
             <Link

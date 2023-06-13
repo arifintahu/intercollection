@@ -7,15 +7,15 @@ export interface Pagination {
 export interface Denom {
   id: string
   name: string
-  schema: string
-  creator: string
-  symbol: string
-  mint_restricted: boolean
-  update_restricted: boolean
-  description: string
+  schema?: string
+  creator?: string
+  symbol?: string
+  mint_restricted?: boolean
+  update_restricted?: boolean
+  description?: string
   uri: string
-  uri_hash: string
-  data: string
+  uri_hash?: string
+  data?: string
 }
 export interface DenomsReponse {
   denoms: Denom[]

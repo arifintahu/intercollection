@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />
-      <Box px={24} pt={12} minH="100vh">
+      <Box px={24} pt={12} minH="100vh" mt={16}>
         {children}
       </Box>
     </>

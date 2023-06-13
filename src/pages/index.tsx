@@ -1,4 +1,4 @@
-import { Text, Flex, Heading, Box, Grid } from '@chakra-ui/react'
+import { Text, Flex, Heading, Box, Grid, Skeleton } from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
@@ -7,6 +7,13 @@ import { getDenoms, Denom } from '@/query/uptick/collection'
 import { Chain, getChain } from '@/config'
 import { selectChainId } from '@/store/chainSlice'
 import { trimDenom } from '@/utils/helpers'
+
+const sampleDenom: Denom = {
+  id: '',
+  name: '',
+  symbol: '',
+  uri: '',
+}
 
 export default function Home() {
   const chainId = useSelector(selectChainId)
@@ -39,7 +46,9 @@ export default function Home() {
       nextKey.current = response.pagination.next_key
       setDenoms((prevVals) => [...prevVals, ...response.denoms])
     }
-    isLoading.current = false
+    setTimeout(() => {
+      isLoading.current = false
+    }, 1000)
   }
 
   const handleScrollEnd = () => {
@@ -96,6 +105,20 @@ export default function Home() {
                 />
               ))}
             </Grid>
+            {isLoading && (
+              <Grid templateColumns="repeat(5, 1fr)" gap={10}>
+                {new Array(5).fill(1).map((_, index) => (
+                  <Skeleton key={Math.random() + index}>
+                    <CardCollection
+                      id={sampleDenom.id}
+                      name={sampleDenom.name}
+                      description={sampleDenom.name}
+                      uri={sampleDenom.uri}
+                    />
+                  </Skeleton>
+                ))}
+              </Grid>
+            )}
           </Box>
         </Flex>
       </main>

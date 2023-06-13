@@ -1,7 +1,7 @@
 import { Coin } from '@/config'
 import { Balance } from '@/query/cosmos/bank'
 
-export const templateImage = '/images/no-preview.jpg'
+export const templateImage = '/images/no-preview.png'
 
 export const defaultTimeout = 300_000_000_000
 
