@@ -168,7 +168,8 @@ export default function CollectionsDetail() {
               <Button
                 mt={4}
                 size={'sm'}
-                colorScheme="orange"
+                color={'orange.500'}
+                borderColor={'orange.500'}
                 variant="outline"
                 onClick={() => setIsShowClassTrace(!isShowClassTrace)}
               >

@@ -26,6 +26,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import NextLink from 'next/link'
 import { FiLogOut } from 'react-icons/fi'
+import { useRouter } from 'next/router'
 
 import { getChains, Chain, getChain } from '@/config'
 import { setChainId, selectChainId } from '@/store/chainSlice'
@@ -33,13 +34,34 @@ import { setAddress, selectAddress } from '@/store/accountSlice'
 import { trimAddress, showBalance } from '@/utils/helpers'
 import { getBalances, Balance } from '@/query/cosmos/bank'
 
+const menuList = [
+  {
+    id: 1,
+    route: '/',
+    name: 'Home',
+  },
+  {
+    id: 2,
+    route: '/mycollections',
+    name: 'My Collections',
+  },
+  {
+    id: 3,
+    route: '/transfer',
+    name: 'Transfer',
+  },
+]
+
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode()
   const [chains, setChains] = useState<Chain[]>([])
   const [chain, setChain] = useState<Chain | null>()
   const [balances, setBalances] = useState<Balance[]>([])
   const [isCopied, setIsCopied] = useState(false)
+
+  const router = useRouter()
   const dispatch = useDispatch()
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const chainId = useSelector(selectChainId)
   const address = useSelector(selectAddress)
@@ -117,30 +139,29 @@ export default function Navbar() {
               h={'auto'}
             ></Image>
             <HStack>
-              <Link
-                as={NextLink}
-                href={'/'}
-                style={{ textDecoration: 'none' }}
-                _focus={{ boxShadow: 'none' }}
-              >
-                <Button>Home</Button>
-              </Link>
-              <Link
-                as={NextLink}
-                href={'/mycollections'}
-                style={{ textDecoration: 'none' }}
-                _focus={{ boxShadow: 'none' }}
-              >
-                <Button>My Collections</Button>
-              </Link>
-              <Link
-                as={NextLink}
-                href={'/transfer'}
-                style={{ textDecoration: 'none' }}
-                _focus={{ boxShadow: 'none' }}
-              >
-                <Button>Transfer</Button>
-              </Link>
+              {menuList.map((item) => (
+                <Link
+                  key={item.id}
+                  as={NextLink}
+                  href={item.route}
+                  style={{ textDecoration: 'none' }}
+                  _focus={{ boxShadow: 'none' }}
+                >
+                  {item.route === router.route ? (
+                    <Button
+                      color={'white'}
+                      bg={'orange.500'}
+                      _hover={{
+                        bg: 'orange.400',
+                      }}
+                    >
+                      {item.name}
+                    </Button>
+                  ) : (
+                    <Button>{item.name}</Button>
+                  )}
+                </Link>
+              ))}
             </HStack>
           </Flex>
 
