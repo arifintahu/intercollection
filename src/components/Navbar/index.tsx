@@ -106,23 +106,16 @@ export default function Navbar() {
       >
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Flex alignItems={'center'} gap={6}>
-            <Link
-              as={NextLink}
-              href={'/'}
-              style={{ textDecoration: 'none' }}
-              _focus={{ boxShadow: 'none' }}
-            >
-              <Image
-                alt="Logo"
-                src={
-                  colorMode === 'light'
-                    ? '/images/logo-dark.svg'
-                    : '/images/logo-light.svg'
-                }
-                w={130}
-                h={'auto'}
-              ></Image>
-            </Link>
+            <Image
+              alt="Logo"
+              src={
+                colorMode === 'light'
+                  ? '/images/logo-dark.svg'
+                  : '/images/logo-light.svg'
+              }
+              w={130}
+              h={'auto'}
+            ></Image>
             <HStack>
               <Link
                 as={NextLink}
@@ -156,7 +149,7 @@ export default function Navbar() {
               <Select
                 variant={'outline'}
                 defaultValue={chains.length ? chains[0].chain_id : ''}
-                borderColor={useColorModeValue('gray.500', 'gray.300')}
+                borderColor={'orange.500'}
                 width={180}
                 onChange={handleSelectChain}
               >
@@ -174,9 +167,7 @@ export default function Navbar() {
                 <Stack direction={'row'} spacing={7}>
                   {!!address ? (
                     <Flex
-                      borderColor={
-                        colorMode === 'light' ? 'gray.800' : 'whiteAlpha.300'
-                      }
+                      borderColor={'orange.500'}
                       borderWidth={1}
                       py={1}
                       px={3}

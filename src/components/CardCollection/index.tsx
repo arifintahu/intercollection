@@ -33,7 +33,7 @@ export default function CardCollection({
   }
 
   return (
-    <Card maxW="sm" shadow={'none'}>
+    <Card maxW="sm" shadow={'none'} borderWidth={1} borderColor={'orange.500'}>
       <CardBody>
         <Box position={'relative'}>
           <Link

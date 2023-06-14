@@ -34,7 +34,7 @@ export default function CardNFT({
   }
 
   return (
-    <Card maxW="sm" shadow={'none'}>
+    <Card maxW="sm" shadow={'none'} borderWidth={1} borderColor={'orange.500'}>
       <CardBody>
         <Box position={'relative'}>
           <Image

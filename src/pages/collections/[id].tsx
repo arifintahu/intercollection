@@ -46,11 +46,14 @@ export default function CollectionsDetail() {
   const { id } = router.query
   const chainId = useSelector(selectChainId)
   const address = useSelector(selectAddress)
+
   const [denom, setDenom] = useState<Denom>()
   const [classTrace, setClassTrace] = useState<ClassTrace>()
   const [nfts, setNFTs] = useState<NFTExtend[]>([])
   const [uriImage, setUriImage] = useState('')
   const [selectedNFT, setSelectedNFT] = useState<NFTExtend>()
+  const [isShowClassTrace, setIsShowClassTrace] = useState(false)
+
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
@@ -156,21 +159,35 @@ export default function CollectionsDetail() {
             {isNativeNFT(denom?.id ?? '') ? 'Native' : 'IBC'}
           </Tag>
           <Text mb={4}>{denom?.description ?? '-'}</Text>
-          {!isNativeNFT(denom?.id ?? '') && (
-            <>
-              <Text size={'sm'} textTransform={'uppercase'} fontFamily={'mono'}>
-                Class Trace
-              </Text>
-              <Text mb={4} maxW={600} textAlign={'center'}>
-                {classTrace?.path ?? '-'}
-              </Text>
-            </>
-          )}
-          <Text size={'sm'} textTransform={'uppercase'} fontFamily={'mono'}>
+          <Text textTransform={'uppercase'} fontFamily={'mono'}>
             Creator
           </Text>
-          <Text mb={12}>{denom?.creator ?? '-'}</Text>
-          <HStack gap={6}>
+          <Text>{denom?.creator ?? '-'}</Text>
+          {!isNativeNFT(denom?.id ?? '') && (
+            <>
+              <Button
+                mt={4}
+                size={'sm'}
+                colorScheme="orange"
+                variant="outline"
+                onClick={() => setIsShowClassTrace(!isShowClassTrace)}
+              >
+                {isShowClassTrace ? 'Hide' : 'Show'} Class Trace
+              </Button>
+              {isShowClassTrace && (
+                <Text
+                  mb={4}
+                  maxW={600}
+                  fontSize={'sm'}
+                  fontWeight={'light'}
+                  textAlign={'center'}
+                >
+                  {classTrace?.path ?? '-'}
+                </Text>
+              )}
+            </>
+          )}
+          <HStack mt={12} gap={6}>
             <Flex
               h={110}
               w={200}
@@ -179,6 +196,7 @@ export default function CollectionsDetail() {
               alignItems={'center'}
               flexDirection={'column'}
               justifyContent={'center'}
+              borderRadius={'md'}
             >
               <Heading fontWeight={'medium'} mb={1}>
                 {nfts.length}
@@ -194,6 +212,7 @@ export default function CollectionsDetail() {
                 alignItems={'center'}
                 flexDirection={'column'}
                 justifyContent={'center'}
+                borderRadius={'md'}
               >
                 <Heading fontWeight={'medium'} mb={1}>
                   {nfts.filter((item) => item.isOwned === true).length}
