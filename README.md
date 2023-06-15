@@ -11,7 +11,7 @@
   </p>
 </div>
 
-`Inter Collection` is a UI for displaying Uptick NFT collections and owned collections. It enables the transfer of NFTs on the same or different chain through IBC transfer. Currently, it only supports Uptick Chain.
+`Inter Collection` is an UI for displaying Uptick NFT collections and owned collections. It enables to transfer of NFTs on the same or different chain through IBC transfer. Currently, it only supports Uptick Chain.
 
 ## Features
 
@@ -21,6 +21,7 @@
 - NFT Transfer
 - IBC NFT transfer
 - Denom class traces
+- Light and dark mode support
 
 ## Contributing
 
