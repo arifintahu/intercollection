@@ -3,7 +3,6 @@ import {
   Flex,
   Heading,
   Box,
-  Grid,
   Image,
   Tag,
   useColorModeValue,
@@ -17,6 +16,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  SimpleGrid,
 } from '@chakra-ui/react'
 import { JSONTree } from 'react-json-tree'
 import Head from 'next/head'
@@ -223,7 +223,7 @@ export default function CollectionsDetail() {
             )}
           </HStack>
           <Box mt={20}>
-            <Grid templateColumns="repeat(5, 1fr)" gap={10}>
+            <SimpleGrid columns={[1, 1, 3, 3, 5]} spacing="40px">
               {nfts.map((item) => (
                 <CardNFT
                   key={item.id}
@@ -234,7 +234,7 @@ export default function CollectionsDetail() {
                   onClick={() => openCardNFT(item.id)}
                 />
               ))}
-            </Grid>
+            </SimpleGrid>
           </Box>
         </Flex>
 

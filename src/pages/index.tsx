@@ -1,4 +1,11 @@
-import { Text, Flex, Heading, Box, Grid, Skeleton } from '@chakra-ui/react'
+import {
+  Text,
+  Flex,
+  Heading,
+  Box,
+  Skeleton,
+  SimpleGrid,
+} from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
@@ -86,6 +93,8 @@ export default function Home() {
           alignItems={'center'}
           flexDirection={'column'}
           justifyContent={'center'}
+          maxW={1300}
+          mx="auto"
         >
           <Heading fontWeight={'medium'} size={'xl'}>
             NFT Collections
@@ -94,7 +103,7 @@ export default function Home() {
             Uptick on-chain collections
           </Text>
           <Box mt={8}>
-            <Grid templateColumns="repeat(5, 1fr)" gap={10}>
+            <SimpleGrid columns={[1, 1, 3, 3, 5]} spacing="40px">
               {denoms.map((item) => (
                 <CardCollection
                   key={item.id}
@@ -104,9 +113,9 @@ export default function Home() {
                   uri={item.uri}
                 />
               ))}
-            </Grid>
+            </SimpleGrid>
             {isLoading && (
-              <Grid templateColumns="repeat(5, 1fr)" gap={10}>
+              <SimpleGrid columns={[1, 1, 3, 3, 5]} spacing="40px">
                 {new Array(5).fill(1).map((_, index) => (
                   <Skeleton key={Math.random() + index}>
                     <CardCollection
@@ -117,7 +126,7 @@ export default function Home() {
                     />
                   </Skeleton>
                 ))}
-              </Grid>
+              </SimpleGrid>
             )}
           </Box>
         </Flex>

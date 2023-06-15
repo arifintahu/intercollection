@@ -1,4 +1,11 @@
-import { Text, Flex, Heading, Box, Grid, useToast } from '@chakra-ui/react'
+import {
+  Text,
+  Flex,
+  Heading,
+  Box,
+  useToast,
+  SimpleGrid,
+} from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -49,6 +56,8 @@ export default function MyCollections() {
           alignItems={'center'}
           flexDirection={'column'}
           justifyContent={'center'}
+          maxW={1300}
+          mx="auto"
         >
           <Heading fontWeight={'medium'} size={'xl'}>
             My Collections
@@ -57,7 +66,7 @@ export default function MyCollections() {
             Uptick on-chain collections
           </Text>
           <Box mt={8}>
-            <Grid templateColumns="repeat(5, 1fr)" gap={10}>
+            <SimpleGrid columns={[1, 1, 3, 3, 5]} spacing="40px">
               {idCollections.map((item) => (
                 <CardCollection
                   key={item.denom_id}
@@ -67,7 +76,7 @@ export default function MyCollections() {
                   uri={''}
                 />
               ))}
-            </Grid>
+            </SimpleGrid>
           </Box>
         </Flex>
       </main>
